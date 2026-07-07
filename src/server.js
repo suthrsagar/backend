@@ -27,8 +27,8 @@ async function startServer() {
       console.log('Database Host: DATABASE_URL is UNDEFINED!');
     }
 
-    // Verify database connection
-    await prisma.$connect();
+    // Verify database connection by sending a test query
+    await prisma.$queryRaw`SELECT 1`;
     console.log('Database connected successfully! 🚀');
 
     const server = app.listen(PORT, () => {
