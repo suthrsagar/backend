@@ -1,5 +1,5 @@
 import app from './app.js';
-import { PORT } from './config/config.js';
+import { PORT, DATABASE_URL } from './config/config.js';
 import prisma from './config/db.js';
 
 // Uncaught Exceptions
@@ -11,6 +11,22 @@ process.on('uncaughtException', (err) => {
 
 async function startServer() {
   try {
+    if (DATABASE_URL) {
+      try {
+        const url = new URL(DATABASE_URL);
+        console.log(`Database Host: ${url.hostname}`);
+      } catch (e) {
+        const hostMatch = DATABASE_URL.match(/@([^/:]+)/);
+        if (hostMatch) {
+          console.log(`Database Host: ${hostMatch[1]}`);
+        } else {
+          console.log('Database Host: Unknown format');
+        }
+      }
+    } else {
+      console.log('Database Host: DATABASE_URL is UNDEFINED!');
+    }
+
     // Verify database connection
     await prisma.$connect();
     console.log('Database connected successfully! 🚀');
